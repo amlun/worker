@@ -1,3 +1,5 @@
 .idea
 logs
 vendor
+composer.lock
+.DS_Store
