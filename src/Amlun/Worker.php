@@ -9,7 +9,8 @@ namespace Amlun;
 set_time_limit(0);
 declare(ticks = 1);
 /**
- * 多进程以及进程管理用supervisord
+ * Use supervisord to control multi process
+ *
  *
  * Created by PhpStorm.
  * User: lunweiwei
@@ -23,13 +24,12 @@ use Monolog\Logger;
 abstract class Worker
 {
     /**
-     * worker name
+     * Worker name
      * @var string
      */
     protected $worker_name;
     /**
-     * When true, workers will stop look for jobs and the parent process will
-     * kill off all running children
+     * When true, worker will stop
      * @var bool
      */
     protected $stop_work = false;
@@ -39,17 +39,17 @@ abstract class Worker
      */
     protected $start_time = 0;
     /**
-     * The timestamp when the signal was received to stop working
+     * The timestamp when the worker stop working
      * @var int
      */
     protected $stop_time = 0;
     /**
-     * The PID of the running process. Set for parent and child processes
+     * The PID of the running process
      * @var int
      */
     protected $pid = 0;
     /**
-     * Maximum time a worker will run
+     * Maximum time worker will run
      * @var int
      */
     protected $max_run_time = 60;
@@ -59,11 +59,12 @@ abstract class Worker
      */
     protected $max_job_count = 10;
     /**
-     * worker config info
+     * Worker config info
      * @var array
      */
     protected $config = array();
     /**
+     * Logger of the worker
      * @var Logger
      */
     protected $logger;
@@ -85,11 +86,11 @@ abstract class Worker
         }
         $this->worker_name = $name;
         /**
-         * set the start time
+         * Set the start time
          */
         $this->start_time = microtime(true);
         /**
-         * set pid
+         * Set pid
          */
         $this->pid = getmypid();
         /**
@@ -97,7 +98,7 @@ abstract class Worker
          */
         $this->getOpt();
         /**
-         * init Logger
+         * Init Logger
          */
         $this->initLogger();
         /**
@@ -109,7 +110,7 @@ abstract class Worker
          */
         $this->startWorker();
         /**
-         * set the stop time
+         * Set the stop time
          */
         $this->stop_time = microtime(true);
     }
@@ -124,7 +125,6 @@ abstract class Worker
         if (isset($opts["H"])) {
             $this->showHelp();
         }
-        // config file
         if (isset($opts["c"])) {
             $this->config['file'] = $opts['c'];
         }
@@ -135,7 +135,6 @@ abstract class Worker
                 $this->showHelp("Config file {$this->config['file']} not found.");
             }
         }
-        // about the log config
         if (isset($opts["l"])) {
             $this->config['log_file'] = $opts["l"];
         }
@@ -159,7 +158,6 @@ abstract class Worker
                     break;
             }
         }
-        // running params
         if (isset($opts['x'])) {
             $this->config['max_worker_lifetime'] = (int)$opts['x'];
         }
@@ -199,7 +197,7 @@ abstract class Worker
 
     /**
      * Parses the config file
-     * @param   string $file The config file.
+     * @param string $file The config file.
      */
     protected function parseConfig($file)
     {
@@ -244,23 +242,24 @@ abstract class Worker
     }
 
     /**
+     * Worker main function
      * @return mixed
      */
     abstract protected function startWorker();
 
     /**
      * Shows help info with optional error message
-     * @param string $msg
+     * @param string $message
      */
-    protected function showHelp($msg = "")
+    protected function showHelp($message = "")
     {
-        if ($msg) {
+        if ($message) {
             echo "ERROR:\n";
-            echo "  " . wordwrap($msg, 72, "\n  ") . "\n\n";
+            echo "  " . wordwrap($message, 72, "\n  ") . "\n\n";
         }
         echo "Worker manager script\n\n";
         echo "USAGE:\n";
-        echo "  # " . basename(__FILE__) . " -h | -c CONFIG [-v] [-l LOG_FILE] [-v] [-P PID_FILE]\n\n";
+        echo "  # " . basename(__FILE__) . " -H | -c CONFIG [-v] [-l LOG_FILE] [-r MAX_NUM] [-x MAX_TIME] [-Z]\n\n";
         echo "OPTIONS:\n";
         echo "  -c CONFIG      Worker configuration file\n";
         echo "  -H             Shows this help\n";
