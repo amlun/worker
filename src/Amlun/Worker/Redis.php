@@ -71,12 +71,14 @@ abstract class Redis extends Worker
         if (!$link) {
             throw new Exception("can not connect the redis server {$redis_config['host']}");
         }
+        $this->logger->debug("connect the redis {$redis_config['host']}:{$redis_config['port']}");
     }
 
     protected function _closeRedis()
     {
         if (isset($this->_redis)) {
             $this->_redis->close();
+            $this->logger->debug("close the connection of redis");
         }
     }
 
