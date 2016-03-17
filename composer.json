@@ -1,7 +1,6 @@
 {
   "name": "amlun/worker",
   "description": "worker task",
-  "minimum-stability": "dev",
   "type": "library",
   "license": "MIT",
   "authors": [
