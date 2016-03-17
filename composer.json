@@ -3,6 +3,7 @@
   "description": "worker task",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://github.com/amlun/worker",
   "authors": [
     {
       "name": "lunweiwei",
@@ -10,8 +11,10 @@
     }
   ],
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=5.3.0",
     "monolog/monolog": "*",
+    "ext-pcntl": "*",
+    "ext-posix": "*",
     "ext-redis": "*"
   },
   "autoload": {
