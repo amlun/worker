@@ -221,6 +221,7 @@ abstract class Worker
         $this->logger->debug("Registering signals");
         pcntl_signal(SIGTERM, array($this, "signal"));
         pcntl_signal(SIGINT, array($this, "signal"));
+        pcntl_signal(SIGQUIT, array($this, "signal"));
     }
 
     /**
